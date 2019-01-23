@@ -12,12 +12,13 @@ import android.view.View;
 
 
 public class BoardView extends View {
-    Board board;
-    Canvas c;
-    Bitmap bmp;
-    Path path;
-    Paint xPaint;
-    Paint oPaint;
+    private Board board;
+    private GameLogic gameLogic;
+    private Canvas c;
+    private Bitmap bmp;
+    private Path path;
+    private Paint xPaint;
+    private Paint oPaint;
 
     public BoardView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -34,8 +35,14 @@ public class BoardView extends View {
     public void setBoard(Board someBoard) {
         board = someBoard;
     }
+    public void setGameLogic(GameLogic someLogic) { gameLogic = someLogic; }
 
     public void drawBoard() {
+
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 
     }
 

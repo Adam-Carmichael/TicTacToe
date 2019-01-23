@@ -16,11 +16,13 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-// class that displays and creates buttons, handles game logic
+// Main class that creates buttons and a pop-up window
+// initializes objects for game functionality
 public class boardActivity extends AppCompatActivity {
     private Board board;
     private BoardView boardView;
     private GameLogic gameLogic;
+    private Button[] butArr;
 
     // Main method to be called on program startup
     @Override
@@ -33,9 +35,11 @@ public class boardActivity extends AppCompatActivity {
         boardView = (BoardView) findViewById(R.id.visibleBoard);
         gameLogic = new GameLogic();
         boardView.setBoard(board);
+        boardView.setGameLogic(gameLogic);
+        butArr = new Button[9];
 
         boardView.drawBoard();
-        choosePlayer();
+        choosePlayer();         // starts game
     }
 
     // Method that handles popup window asking for user to choose to play as the X or O tile user
@@ -125,9 +129,12 @@ public class boardActivity extends AppCompatActivity {
                     }
                 });
 
+                butArr[id] = someButton;
                 rl.addView(someButton, lp);
             }
         }
+
+        board.setButArr(butArr);
     }
 
     // Populates the toolbar with the Start New Game and Quit text buttons
