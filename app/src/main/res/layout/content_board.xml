@@ -9,4 +9,10 @@
     tools:context=".boardActivity"
     tools:showIn="@layout/activity_board">
 
+    <com.projectstudy.rotten.tictactoe.BoardView
+        android:id="@+id/visibleBoard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"/>
+
 </RelativeLayout>
