@@ -21,25 +21,25 @@ import android.view.MenuItem;
 public class boardActivity extends AppCompatActivity {
     private Board board;
     private BoardView boardView;
-    private GameLogic gameLogic;
-    private Button[] butArr;
+    private final Button[][] butArr = new Button[3][3];
 
     // Main method to be called on program startup
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // display view with toolbar
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // initialize objects
         board = new Board();
         boardView = (BoardView) findViewById(R.id.visibleBoard);
-        gameLogic = new GameLogic();
         boardView.setBoard(board);
-        boardView.setGameLogic(gameLogic);
-        butArr = new Button[9];
+        boardView.setMainActivity(this);
 
-        boardView.drawBoard();
-        choosePlayer();         // starts game
+        // create a pop-up window
+        choosePlayer();
     }
 
     // Method that handles popup window asking for user to choose to play as the X or O tile user
@@ -69,8 +69,8 @@ public class boardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // set playerTile to X in board class then close pop-up and start game
-                gameLogic.setPlayerTile('X');
-                gameLogic.setCpuTile('O');
+                board.setPlayerTile('X');
+                board.setCpuTile('O');
                 playerPopup.dismiss();
                 createButtonGrid();
             }
@@ -81,8 +81,8 @@ public class boardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // set playerTile to O in board class then close pop-up and start game
-                gameLogic.setPlayerTile('O');
-                gameLogic.setCpuTile('X');
+                board.setPlayerTile('O');
+                board.setCpuTile('X');
                 playerPopup.dismiss();
                 createButtonGrid();
             }
@@ -93,44 +93,47 @@ public class boardActivity extends AppCompatActivity {
         // dynamically create 9 transparent tile buttons
         // buttons will be positioned on top of the white space inbetween
         // the black lines of the board
-        int i, y, id;
+        int i, y;
         int marginLeft;
         int marginTop;
-        final int[] rowCol = new int[2];    // rowCol[0] == row and rowCol[1] == col
-        for (i = 0, id = 0; i < 3; ++i) {
-            rowCol[0] = i;
+        for (i = 0; i < 3; ++i) {
             marginLeft = i * 380;
 
-            for (y = 0; y < 3; ++y, ++id) {
-                rowCol[1] = y;
+            for (y = 0; y < 3; ++y) {
                 final Button someButton = new Button(this);
-                someButton.setId(id);
-                someButton.setBackgroundColor(Color.GREEN);
-                // someButton.setBackgroundColor(Color.TRANSPARENT);
+                //someButton.setBackgroundColor(Color.GREEN);
+                someButton.setBackgroundColor(Color.TRANSPARENT);
                 someButton.setWidth(320);
                 someButton.setHeight(320);
 
                 RelativeLayout rl = findViewById(R.id.content_board);
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-                System.out.println(rl);
-
                 marginTop = 563 + y * 380;
                 lp.setMargins(marginLeft, marginTop, 0, 0);
 
-                someButton.setOnClickListener(new View.OnClickListener() {
+                butArr[i][y] = someButton;
+                rl.addView(someButton, lp);
+            }
+        }
+
+        // define the event listeners of the buttons created
+        for (i = 0; i < 3; ++i) {
+            for (y = 0; y < 3; ++y) {
+                butArr[i][y].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // end player turn, make button invisible, update board class,
+                        // make button invisible, update board class,
                         // and draw the player tile on the board at given position
-                        someButton.setVisibility(View.INVISIBLE);
-                        board.setTile(gameLogic.getPlayerTile(), rowCol[0], rowCol[1]);
-                        boardView.drawPlayerTile(gameLogic.getPlayerTile());
+                        butArr[i][y].setVisibility(View.INVISIBLE);
+                        // TODO: fix this instance of setPlayerTile method
+                        board.setPlayerTile(i, y);
+                        System.out.println("Printing values of rowCol:" + i + " " + y);
+                        System.out.println("Printing value of charTile in Board class:" + board.getTile(i, y));
+                        board.setCpuTurn(true);
+                        boardView.invalidate();
                     }
                 });
-
-                butArr[id] = someButton;
-                rl.addView(someButton, lp);
             }
         }
 
@@ -153,10 +156,9 @@ public class boardActivity extends AppCompatActivity {
             System.exit(0);
         }
         else if (id == R.id.action_newGame) {
-            // reset all classes, prompt pop-up window asking user to choose a tile
+            // reset board class, clear X and O images, prompt pop-up window asking user to choose a tile
             board.resetBoard();
-            boardView.resetView();
-            gameLogic.resetLogic();
+            boardView.invalidate();
             choosePlayer();
         }
 
