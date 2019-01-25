@@ -1,6 +1,10 @@
 package com.projectstudy.rotten.tictactoe;
 
+import android.view.View;
 import android.widget.Button;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 // class containing board object, tracks state of the board
 public class Board {
@@ -9,31 +13,40 @@ public class Board {
     private char playerTile;
     private char cpuTile;
     private boolean cpuTurn;
+    private int[] coordArr;
+    private boolean gameEnded;
 
     public Board() {
         tileArr = new char[3][3];       // default value is 0 or (backslash)u0000 for empty elems
         butArr = new Button[3][3];
+        coordArr = new int[2];
+        gameEnded = false;
     }
 
     public void setButArr(Button[][] someArr) {
-        int i, y;
-        System.out.println("Printing rows: " + someArr.length);
-        System.out.println("Printing columns: " + someArr[0].length);
+        int i, j;
         for (i = 0; i < someArr.length; ++i) {
-            for (y = 0; y < someArr[0].length; ++y) {
-                butArr[i][y] = someArr[i][y];
+            for (j = 0; j < someArr[0].length; ++j) {
+                butArr[i][j] = someArr[i][j];
             }
         }
     }
 
+    public void setButInvis(int i, int j) {
+        butArr[i][j].setVisibility(View.INVISIBLE);
+    }
+
+    public void setGameEnded(boolean someBool) {
+        gameEnded = someBool;
+    }
+    public boolean getGameEnded() { return gameEnded; }
+
     public void setPlayerTile(int row, int col) {
         tileArr[row][col] = playerTile;
     }
-
     public void setCpuTile(int row, int col) {
         tileArr[row][col] = cpuTile;
     }
-
     public char getTile(int row, int col) {
         return tileArr[row][col];
     }
@@ -42,10 +55,47 @@ public class Board {
     public boolean getCpuTurn() { return cpuTurn; }
 
     public void setPlayerTile(char someTile) { playerTile = someTile; }
-    public char getPlayerTile() { return playerTile; }
-
     public void setCpuTile(char someTile) { cpuTile = someTile; }
-    public char getCpuTile() { return cpuTile; }
+
+    // returns the coordinates of a randomly selected (available) point on the button grid
+    public int[] getCoordCpuRandom() {
+        // first create two arrayLists for rows and cols
+        // they are made to contain the numbers 0-2 and are then shuffled as
+        // to be organized randomly
+        int i;
+        ArrayList<Integer> rowArr = new ArrayList<>(3);
+        for (i = 0; i < 3; ++i) {
+            rowArr.add(i);
+        }
+        Collections.shuffle(rowArr);
+
+        ArrayList<Integer> colArr = new ArrayList<>(3);
+        for (i = 0; i < 3; ++i) {
+            colArr.add(i);
+        }
+        Collections.shuffle(colArr);
+
+        // iterate through all the rows and columns of the board
+        // check for empty tiles using the randomized row and col values
+        int j;
+        int row, col;
+        for (i = 0; i < 3; ++i) {
+            row = rowArr.get(i);
+
+            for (j = 0; j < 3; ++j) {
+                col = colArr.get(j);
+
+                if (tileArr[row][col] == 'X' || tileArr[row][col] == 'O') {
+                    continue;
+                } else if (tileArr[row][col] == 0) {
+                    coordArr[0] = row;
+                    coordArr[1] = col;
+                    return coordArr;
+                }
+            }
+        }
+        return null;    // if null is returned the board is full
+    }
 
     // sets all private variables of Board class to default values
     public void resetBoard() {

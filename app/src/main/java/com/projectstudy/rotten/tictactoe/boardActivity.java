@@ -93,13 +93,14 @@ public class boardActivity extends AppCompatActivity {
         // dynamically create 9 transparent tile buttons
         // buttons will be positioned on top of the white space inbetween
         // the black lines of the board
-        int i, y;
+        int i, j;
         int marginLeft;
         int marginTop;
         for (i = 0; i < 3; ++i) {
-            marginLeft = i * 380;
+            marginTop = 563 + i * 380;
+            final int row = i;
 
-            for (y = 0; y < 3; ++y) {
+            for (j = 0; j < 3; ++j) {
                 final Button someButton = new Button(this);
                 //someButton.setBackgroundColor(Color.GREEN);
                 someButton.setBackgroundColor(Color.TRANSPARENT);
@@ -109,35 +110,32 @@ public class boardActivity extends AppCompatActivity {
                 RelativeLayout rl = findViewById(R.id.content_board);
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-                marginTop = 563 + y * 380;
+                marginLeft = j * 380;
                 lp.setMargins(marginLeft, marginTop, 0, 0);
 
-                butArr[i][y] = someButton;
-                rl.addView(someButton, lp);
-            }
-        }
-
-        // define the event listeners of the buttons created
-        for (i = 0; i < 3; ++i) {
-            for (y = 0; y < 3; ++y) {
-                butArr[i][y].setOnClickListener(new View.OnClickListener() {
+                final int col = j;
+                someButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         // make button invisible, update board class,
                         // and draw the player tile on the board at given position
-                        butArr[i][y].setVisibility(View.INVISIBLE);
-                        // TODO: fix this instance of setPlayerTile method
-                        board.setPlayerTile(i, y);
-                        System.out.println("Printing values of rowCol:" + i + " " + y);
-                        System.out.println("Printing value of charTile in Board class:" + board.getTile(i, y));
+                        butArr[row][col].setVisibility(View.INVISIBLE);
+                        board.setPlayerTile(row, col);
                         board.setCpuTurn(true);
                         boardView.invalidate();
                     }
                 });
+
+                butArr[i][j] = someButton;
+                rl.addView(someButton, lp);
             }
         }
 
         board.setButArr(butArr);
+    }
+
+    public void gameEndedPopup() {
+        // TODO: create game-ending popup, determine winner and loser via board class
     }
 
     // Populates the toolbar with the Start New Game and Quit text buttons
@@ -157,6 +155,7 @@ public class boardActivity extends AppCompatActivity {
         }
         else if (id == R.id.action_newGame) {
             // reset board class, clear X and O images, prompt pop-up window asking user to choose a tile
+            // TODO: fix crashing issue here
             board.resetBoard();
             boardView.invalidate();
             choosePlayer();

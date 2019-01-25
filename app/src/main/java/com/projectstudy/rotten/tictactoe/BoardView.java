@@ -25,6 +25,7 @@ public class BoardView extends View {
 
         xPaint = new Paint();
         xPaint.setAntiAlias(true);
+        xPaint.setStrokeWidth(10);
         xPaint.setColor(Color.RED);
 
         oPaint = new Paint();
@@ -62,18 +63,60 @@ public class BoardView extends View {
         canvas.drawLine(0, 1292, 1080, 1292, gridPaint);
     }
 
+    // check board for location of tiles then draw them
+    // additionally, call the method to determine where cpu will draw
+    // and draw that tile, ending cpu's turn afterwards
+    // check if game has ended inbetween player and cpu drawing
     private void drawBoard(Canvas canvas) {
-        // marginLeft = i * 380;
-        // marginTop = 563 + y * 380;
+        if (!board.getGameEnded()) {
+            int i, j;
+            float topLeftX, topLeftY, botRightX, botRightY;
+            float botLeftX, botLeftY, topRightX, topRightY;
+            float cenX, cenY, radius;
+            for (i = 0; i < 3; ++i) {
+                for (j = 0; j < 3; ++j) {
+                    if (board.getTile(i, j) == 'X') {
+                        topLeftX = j * 380;
+                        topLeftY = 563 + i * 380;
+                        botRightX = topLeftX + 320;
+                        botRightY = topLeftY + 320;
+                        canvas.drawLine(topLeftX, topLeftY, botRightX, botRightY, xPaint);
 
-        int i, y;
-        float topLeftX, topLeftY, botRightX, botRightY;
-        float botLeftX, botLeftY, topRightX, topRightY;
-        for(i = 0; i < 3; ++i) {
-            for(y = 0; y < 3; ++y) {
-                if (board.getTile(i, y) == 'X') {
-                    topLeftX = i * 380;
-                    topLeftY = 563 + y * 380;
+                        botLeftX = topLeftX;
+                        botLeftY = topLeftY + 320;
+                        topRightX = topLeftX + 320;
+                        topRightY = topLeftY;
+                        canvas.drawLine(botLeftX, botLeftY, topRightX, topRightY, xPaint);
+                    } else if (board.getTile(i, j) == 'O') {
+                        cenX = j * 380 + 160;
+                        cenY = 563 + i * 380 + 160;
+                        radius = 160;
+
+                        canvas.drawCircle(cenX, cenY, radius, oPaint);
+                    }
+                }
+            }
+
+            // TODO: check win condition
+
+            if (board.getCpuTurn()) {
+                int[] coordArr;
+                coordArr = board.getCoordCpuRandom();
+
+                if (coordArr == null) {
+                    board.setGameEnded(true);
+                    board.setCpuTurn(false);
+                    return;
+                }
+
+                int row, col;
+                row = coordArr[0];
+                col = coordArr[1];
+                board.setCpuTile(row, col);
+
+                if (board.getTile(row, col) == 'X') {
+                    topLeftX = col * 380;
+                    topLeftY = 563 + row * 380;
                     botRightX = topLeftX + 320;
                     botRightY = topLeftY + 320;
                     canvas.drawLine(topLeftX, topLeftY, botRightX, botRightY, xPaint);
@@ -83,17 +126,22 @@ public class BoardView extends View {
                     topRightX = topLeftX + 320;
                     topRightY = topLeftY;
                     canvas.drawLine(botLeftX, botLeftY, topRightX, topRightY, xPaint);
-                }
-                else if (board.getTile(i, y) == 'O') {
-                    //canvas.drawCircle();
-                }
-                else { continue; }
-            }
-        }
+                } else if (board.getTile(row, col) == 'O') {
+                    cenX = col * 380 + 160;
+                    cenY = 563 + row * 380 + 160;
+                    radius = 160;
 
-        if (board.getCpuTurn()) {
-            // TODO: draw CPU tile, update board class with setCpuTile method
-            board.setCpuTurn(false);
+                    canvas.drawCircle(cenX, cenY, radius, oPaint);
+                }
+
+                board.setButInvis(row, col);
+                board.setCpuTurn(false);
+            }
+
+            // TODO: check win condition
+        }
+        else if (board.getGameEnded()) {
+            activity.gameEndedPopup();
         }
     }
 }
