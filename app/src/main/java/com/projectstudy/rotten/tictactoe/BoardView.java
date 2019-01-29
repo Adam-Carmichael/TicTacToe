@@ -97,7 +97,12 @@ public class BoardView extends View {
                 }
             }
 
-            // TODO: check win condition
+            char gameWon = board.checkWin();
+            if (gameWon == 'X' || gameWon == 'O') {
+                board.setGameEnded(true);
+                activity.gameEndedPopup();
+                return;
+            }
 
             if (board.getCpuTurn()) {
                 int[] coordArr;
@@ -138,7 +143,12 @@ public class BoardView extends View {
                 board.setCpuTurn(false);
             }
 
-            // TODO: check win condition
+            gameWon = board.checkWin();
+            if (gameWon == 'X' || gameWon == 'O') {
+                board.setGameEnded(true);
+                activity.gameEndedPopup();
+                return;
+            }
         }
         else if (board.getGameEnded()) {
             activity.gameEndedPopup();

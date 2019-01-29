@@ -23,6 +23,70 @@ public class Board {
         gameEnded = false;
     }
 
+    // method that iterates through tileArr and checks if tic tac toe win conditions are met
+    // returns X if X is winner, O if O is winner, and 0 if no winner
+    public char checkWin() {
+        int i, j;
+
+        // check rows for a winner
+        for (i = 0; i < tileArr.length; ++i) {
+            if ((tileArr[i][0] == 'X' &&
+                tileArr[i][0] == tileArr[i][1] &&
+                tileArr[i][1] == tileArr[i][2])
+                ||
+                (tileArr[i][0] == 'O' &&
+                tileArr[i][0] == tileArr[i][1] &&
+                tileArr[i][1] == tileArr[i][2])) {
+                    gameEnded = true;
+                    System.out.println("row was returned");
+                    return tileArr[i][0];
+            }
+        }
+
+        // check cols for a winner
+        for (j = 0; j < tileArr[0].length; ++j) {
+            if ((tileArr[0][j] == 'X' &&
+                tileArr[0][j] == tileArr[1][j] &&
+                tileArr[1][j] == tileArr[2][j])
+                ||
+                (tileArr[0][j] == 'O' &&
+                tileArr[0][j] == tileArr[1][j] &&
+                tileArr[1][j] == tileArr[2][j])) {
+                    gameEnded = true;
+                    System.out.println("column was returned");
+                    return tileArr[0][j];
+            }
+        }
+
+        // check upper-left to bot-right diagonal for a winner
+        if ((tileArr[0][0] == 'X' &&
+            tileArr[0][0] == tileArr[1][1] &&
+            tileArr[1][1] == tileArr[2][2])
+            ||
+            (tileArr[0][0] == 'O' &&
+            tileArr[0][0] == tileArr[1][1] &&
+            tileArr[1][1] == tileArr[2][2])) {
+                gameEnded = true;
+                System.out.println("diagonal was returned");
+                return tileArr[0][0];
+        }
+
+        // check bot-left to top-right diagonal for a winner
+        if ((tileArr[2][0] == 'O' &&
+            tileArr[2][0] == tileArr[1][1] &&
+            tileArr[1][1] == tileArr[0][2])
+            ||
+            (tileArr[2][0] == 'X' &&
+            tileArr[2][0] == tileArr[1][1] &&
+            tileArr[1][1] == tileArr[0][2])) {
+                gameEnded = true;
+                System.out.println("diagonal was returned");
+                return tileArr[2][0];
+        }
+
+        return 0;
+    }
+
     public void setButArr(Button[][] someArr) {
         int i, j;
         for (i = 0; i < someArr.length; ++i) {
@@ -44,9 +108,17 @@ public class Board {
     public void setPlayerTile(int row, int col) {
         tileArr[row][col] = playerTile;
     }
+    public char getPlayerTile() {
+        return playerTile;
+    }
+
     public void setCpuTile(int row, int col) {
         tileArr[row][col] = cpuTile;
     }
+    public char getCpuTile() {
+        return cpuTile;
+    }
+
     public char getTile(int row, int col) {
         return tileArr[row][col];
     }
@@ -99,6 +171,7 @@ public class Board {
 
     // sets all private variables of Board class to default values
     public void resetBoard() {
+        gameEnded = false;
         tileArr = null;
         butArr = null;
         System.gc();

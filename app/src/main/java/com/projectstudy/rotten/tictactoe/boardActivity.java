@@ -15,6 +15,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 // Main class that creates buttons and a pop-up window
 // initializes objects for game functionality
@@ -102,7 +103,6 @@ public class boardActivity extends AppCompatActivity {
 
             for (j = 0; j < 3; ++j) {
                 final Button someButton = new Button(this);
-                //someButton.setBackgroundColor(Color.GREEN);
                 someButton.setBackgroundColor(Color.TRANSPARENT);
                 someButton.setWidth(320);
                 someButton.setHeight(320);
@@ -135,7 +135,34 @@ public class boardActivity extends AppCompatActivity {
     }
 
     public void gameEndedPopup() {
-        // TODO: create game-ending popup, determine winner and loser via board class
+        // inflates layout of popup window
+        LayoutInflater inflater = (LayoutInflater)
+                getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.game_over_popup, null);
+
+        // initialize popup window and buttons to be in popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = false;
+        final PopupWindow gameEndedPopup = new PopupWindow(popupView, width, height, focusable);
+        TextView playerText = (TextView) popupView.findViewById(R.id.playerWin);
+        TextView cpuText = (TextView) popupView.findViewById(R.id.cpuWin);
+
+        char winner = board.checkWin();
+        if (winner == board.getPlayerTile()) {
+            playerText.setVisibility(View.VISIBLE);
+        }
+
+        if (winner == board.getCpuTile()) {
+            cpuText.setVisibility(View.VISIBLE);
+        }
+
+        // ensures popup is not shown before layout content is loaded
+        findViewById(R.id.content_board).post(new Runnable() {
+            public void run() {
+                gameEndedPopup.showAtLocation(findViewById(R.id.content_board), Gravity.CENTER, 10, 10);
+            }
+        });
     }
 
     // Populates the toolbar with the Start New Game and Quit text buttons
