@@ -168,13 +168,5 @@ public class Board {
         }
         return null;    // if null is returned the board is full
     }
-
-    // sets all private variables of Board class to default values
-    public void resetBoard() {
-        gameEnded = false;
-        tileArr = null;
-        butArr = null;
-        System.gc();
-    }
 }
 

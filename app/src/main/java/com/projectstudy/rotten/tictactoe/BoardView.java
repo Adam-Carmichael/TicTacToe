@@ -150,8 +150,5 @@ public class BoardView extends View {
                 return;
             }
         }
-        else if (board.getGameEnded()) {
-            activity.gameEndedPopup();
-        }
     }
 }

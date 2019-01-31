@@ -2,6 +2,7 @@ package com.projectstudy.rotten.tictactoe;
 
 import android.app.ActionBar;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,19 +11,22 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.view.LayoutInflater;
 import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.MotionEvent;
 
 // Main class that creates buttons and a pop-up window
 // initializes objects for game functionality
 public class boardActivity extends AppCompatActivity {
     private Board board;
     private BoardView boardView;
-    private final Button[][] butArr = new Button[3][3];
+    private Button[][] butArr = new Button[3][3];
+    private PopupWindow tempGameEndedPopup;
 
     // Main method to be called on program startup
     @Override
@@ -90,6 +94,8 @@ public class boardActivity extends AppCompatActivity {
         });
     }
 
+    // TODO: reconfigure button grid to be drawn dependent on the device (rather than with static dpi)
+    // TODO: replace button grid with a method in the BoardView class that draws based upon the location of a click
     public void createButtonGrid() {
         // dynamically create 9 transparent tile buttons
         // buttons will be positioned on top of the white space inbetween
@@ -145,6 +151,7 @@ public class boardActivity extends AppCompatActivity {
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         boolean focusable = false;
         final PopupWindow gameEndedPopup = new PopupWindow(popupView, width, height, focusable);
+
         TextView playerText = (TextView) popupView.findViewById(R.id.playerWin);
         TextView cpuText = (TextView) popupView.findViewById(R.id.cpuWin);
 
@@ -163,6 +170,17 @@ public class boardActivity extends AppCompatActivity {
                 gameEndedPopup.showAtLocation(findViewById(R.id.content_board), Gravity.CENTER, 10, 10);
             }
         });
+
+        // if area outside of popup is clicked popup is dismissed
+        RelativeLayout layout = findViewById(R.id.content_board);
+        layout.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameEndedPopup.dismiss();
+            }
+        });
+
+        tempGameEndedPopup = gameEndedPopup;
     }
 
     // Populates the toolbar with the Start New Game and Quit text buttons
@@ -181,9 +199,14 @@ public class boardActivity extends AppCompatActivity {
             System.exit(0);
         }
         else if (id == R.id.action_newGame) {
-            // reset board class, clear X and O images, prompt pop-up window asking user to choose a tile
-            // TODO: fix crashing issue here
-            board.resetBoard();
+            // replace old objects with new ones
+            board = new Board();
+            boardView = (BoardView) findViewById(R.id.visibleBoard);
+            boardView.setBoard(board);
+            boardView.setMainActivity(this);
+
+            // dismiss game-ending popup, draw clean board, and prompt new game popup
+            tempGameEndedPopup.dismiss();
             boardView.invalidate();
             choosePlayer();
         }
