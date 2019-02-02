@@ -25,7 +25,6 @@ import android.view.MotionEvent;
 public class boardActivity extends AppCompatActivity {
     private Board board;
     private BoardView boardView;
-    private Button[][] butArr = new Button[3][3];
     private PopupWindow tempGameEndedPopup;
 
     // Main method to be called on program startup
@@ -77,7 +76,7 @@ public class boardActivity extends AppCompatActivity {
                 board.setPlayerTile('X');
                 board.setCpuTile('O');
                 playerPopup.dismiss();
-                createButtonGrid();
+                boardView.createButtonGrid();
             }
         });
 
@@ -89,55 +88,9 @@ public class boardActivity extends AppCompatActivity {
                 board.setPlayerTile('O');
                 board.setCpuTile('X');
                 playerPopup.dismiss();
-                createButtonGrid();
+                boardView.createButtonGrid();
             }
         });
-    }
-
-    // TODO: reconfigure button grid to be drawn dependent on the device (rather than with static dpi)
-    // TODO: replace button grid with a method in the BoardView class that draws based upon the location of a click
-    public void createButtonGrid() {
-        // dynamically create 9 transparent tile buttons
-        // buttons will be positioned on top of the white space inbetween
-        // the black lines of the board
-        int i, j;
-        int marginLeft;
-        int marginTop;
-        for (i = 0; i < 3; ++i) {
-            marginTop = 563 + i * 380;
-            final int row = i;
-
-            for (j = 0; j < 3; ++j) {
-                final Button someButton = new Button(this);
-                someButton.setBackgroundColor(Color.TRANSPARENT);
-                someButton.setWidth(320);
-                someButton.setHeight(320);
-
-                RelativeLayout rl = findViewById(R.id.content_board);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                marginLeft = j * 380;
-                lp.setMargins(marginLeft, marginTop, 0, 0);
-
-                final int col = j;
-                someButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // make button invisible, update board class,
-                        // and draw the player tile on the board at given position
-                        butArr[row][col].setVisibility(View.INVISIBLE);
-                        board.setPlayerTile(row, col);
-                        board.setCpuTurn(true);
-                        boardView.invalidate();
-                    }
-                });
-
-                butArr[i][j] = someButton;
-                rl.addView(someButton, lp);
-            }
-        }
-
-        board.setButArr(butArr);
     }
 
     public void gameEndedPopup() {
