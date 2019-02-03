@@ -38,7 +38,6 @@ public class Board {
                 tileArr[i][0] == tileArr[i][1] &&
                 tileArr[i][1] == tileArr[i][2])) {
                     gameEnded = true;
-                    System.out.println("row was returned");
                     return tileArr[i][0];
             }
         }
@@ -53,7 +52,6 @@ public class Board {
                 tileArr[0][j] == tileArr[1][j] &&
                 tileArr[1][j] == tileArr[2][j])) {
                     gameEnded = true;
-                    System.out.println("column was returned");
                     return tileArr[0][j];
             }
         }
@@ -67,7 +65,6 @@ public class Board {
             tileArr[0][0] == tileArr[1][1] &&
             tileArr[1][1] == tileArr[2][2])) {
                 gameEnded = true;
-                System.out.println("diagonal was returned");
                 return tileArr[0][0];
         }
 
@@ -80,7 +77,6 @@ public class Board {
             tileArr[2][0] == tileArr[1][1] &&
             tileArr[1][1] == tileArr[0][2])) {
                 gameEnded = true;
-                System.out.println("diagonal was returned");
                 return tileArr[2][0];
         }
 
@@ -167,6 +163,15 @@ public class Board {
             }
         }
         return null;    // if null is returned the board is full
+    }
+
+    public void clearButArr() {
+        int i, j;
+        for (i = 0; i < 3; ++i) {
+            for (j = 0; j < 3; ++j) {
+                butArr[i][j].setVisibility(View.GONE);
+            }
+        }
     }
 }
 

@@ -45,7 +45,7 @@ public class BoardView extends View {
     }
     public void setMainActivity(boardActivity someActivity) { activity = someActivity; }
 
-    // TODO: implement another method that determines the location of a user touch event and uses those coordinates to draw
+    // TODO: implement another method that determines the location of a user touch event (in place of buttons) and uses those coordinates to draw
     public void createButtonGrid() {
         // dynamically create 9 transparent tile buttons
         // buttons will be positioned on top of the white space inbetween
@@ -145,53 +145,69 @@ public class BoardView extends View {
     // check if game has ended inbetween player and cpu drawing
     // TODO: draw X and O dynamically
     private void drawBoard(Canvas canvas) {
-        /**
-         * if (j == 1) {
-            someButton.setWidth(width / 3 - GRID_STROKE_WIDTH);
-        } else {
-            someButton.setWidth(width / 3 - GRID_STROKE_WIDTH / 2);
-        }
-        if (i == 1) {
-            someButton.setHeight(height / 3 - GRID_STROKE_WIDTH);
-        } else {
-            someButton.setHeight(height / 3 - GRID_STROKE_WIDTH / 2);
-        }
-
-        if (j == 0) {
-            marginLeft = 0;
-        } else {
-            marginLeft = width / 3 * j + GRID_STROKE_WIDTH / 2;
-        }
-        if (i == 0) {
-            marginTop = 0;
-        } else {
-            marginTop = height / 3 * i + GRID_STROKE_WIDTH / 2;
-        }**/
-
         if (!board.getGameEnded()) {
             int i, j;
             float topLeftX, topLeftY, botRightX, botRightY;
             float botLeftX, botLeftY, topRightX, topRightY;
+            float butWidth, butHeight;
             float cenX, cenY, radius;
             for (i = 0; i < 3; ++i) {
                 for (j = 0; j < 3; ++j) {
                     if (board.getTile(i, j) == 'X') {
-                        topLeftX = j * 380;
-                        topLeftY = 563 + i * 380;
-                        botRightX = topLeftX + 320;
-                        botRightY = topLeftY + 320;
+                         if (j == 1) {
+                            butWidth = width / 3 - GRID_STROKE_WIDTH;
+                         } else {
+                            butWidth = width / 3 - GRID_STROKE_WIDTH / 2;
+                         }
+                         if (i == 1) {
+                            butHeight = height / 3 - GRID_STROKE_WIDTH;
+                         } else {
+                            butHeight = height / 3 - GRID_STROKE_WIDTH / 2;
+                         }
+
+                         if (j == 0) {
+                            topLeftX = 0;
+                         } else {
+                            topLeftX = width / 3 * j + GRID_STROKE_WIDTH / 2;
+                         }
+                         if (i == 0) {
+                            topLeftY = 0;
+                         } else {
+                            topLeftY = height / 3 * i + GRID_STROKE_WIDTH / 2;
+                         }
+                        botRightX = topLeftX + butWidth;
+                        botRightY = topLeftY + butHeight;
                         canvas.drawLine(topLeftX, topLeftY, botRightX, botRightY, xPaint);
 
                         botLeftX = topLeftX;
-                        botLeftY = topLeftY + 320;
-                        topRightX = topLeftX + 320;
+                        botLeftY = topLeftY + butHeight;
+                        topRightX = topLeftX + butWidth;
                         topRightY = topLeftY;
                         canvas.drawLine(botLeftX, botLeftY, topRightX, topRightY, xPaint);
                     } else if (board.getTile(i, j) == 'O') {
-                        cenX = j * 380 + 160;
-                        cenY = 563 + i * 380 + 160;
-                        radius = 160;
+                        if (j == 1) {
+                            butWidth = width / 3 - GRID_STROKE_WIDTH;
+                        } else {
+                            butWidth = width / 3 - GRID_STROKE_WIDTH / 2;
+                        }
+                        if (i == 1) {
+                            butHeight = height / 3 - GRID_STROKE_WIDTH;
+                        } else {
+                            butHeight = height / 3 - GRID_STROKE_WIDTH / 2;
+                        }
 
+                        if (j == 0) {
+                            cenX = butWidth / 2;
+                        } else {
+                            cenX = width / 3 * j + GRID_STROKE_WIDTH / 2 + butWidth / 2;
+                        }
+                        if (i == 0) {
+                            cenY = butHeight / 2;
+                        } else {
+                            cenY = height / 3 * i + GRID_STROKE_WIDTH / 2 + butHeight / 2;
+                        }
+
+                        radius = butWidth;
                         canvas.drawCircle(cenX, cenY, radius, oPaint);
                     }
                 }

@@ -152,6 +152,9 @@ public class boardActivity extends AppCompatActivity {
             System.exit(0);
         }
         else if (id == R.id.action_newGame) {
+            // clear buttons from previous game
+            board.clearButArr();
+
             // replace old objects with new ones
             board = new Board();
             boardView = (BoardView) findViewById(R.id.visibleBoard);
