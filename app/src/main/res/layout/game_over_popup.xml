@@ -27,4 +27,14 @@
         android:textSize="22sp"
         android:visibility="gone"/>
 
+    <TextView
+        android:id="@+id/draw"
+        android:layout_width="207dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        android:text="You and your opponent both lay bruised and battered, unable to even raise a finger."
+        android:textSize="22sp"
+        android:visibility="gone"/>
+
 </RelativeLayout>

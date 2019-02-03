@@ -143,7 +143,6 @@ public class BoardView extends View {
     // additionally, call the method to determine where cpu will draw
     // and draw that tile, ending cpu's turn afterwards
     // check if game has ended inbetween player and cpu drawing
-    // TODO: draw X and O dynamically
     private void drawBoard(Canvas canvas) {
         if (!board.getGameEnded()) {
             int i, j;
@@ -207,14 +206,14 @@ public class BoardView extends View {
                             cenY = height / 3 * i + GRID_STROKE_WIDTH / 2 + butHeight / 2;
                         }
 
-                        radius = butWidth;
+                        radius = butWidth / 2;
                         canvas.drawCircle(cenX, cenY, radius, oPaint);
                     }
                 }
             }
 
-            char gameWon = board.checkWin();
-            if (gameWon == 'X' || gameWon == 'O') {
+            char gameEnd = board.checkWin();
+            if (gameEnd == 'X' || gameEnd == 'O' || gameEnd == 'D') {
                 board.setGameEnded(true);
                 activity.gameEndedPopup();
                 return;
@@ -236,22 +235,60 @@ public class BoardView extends View {
                 board.setCpuTile(row, col);
 
                 if (board.getTile(row, col) == 'X') {
-                    topLeftX = col * 380;
-                    topLeftY = 563 + row * 380;
-                    botRightX = topLeftX + 320;
-                    botRightY = topLeftY + 320;
+                    if (col == 1) {
+                        butWidth = width / 3 - GRID_STROKE_WIDTH;
+                    } else {
+                        butWidth = width / 3 - GRID_STROKE_WIDTH / 2;
+                    }
+                    if (row == 1) {
+                        butHeight = height / 3 - GRID_STROKE_WIDTH;
+                    } else {
+                        butHeight = height / 3 - GRID_STROKE_WIDTH / 2;
+                    }
+
+                    if (col == 0) {
+                        topLeftX = 0;
+                    } else {
+                        topLeftX = width / 3 * col + GRID_STROKE_WIDTH / 2;
+                    }
+                    if (row == 0) {
+                        topLeftY = 0;
+                    } else {
+                        topLeftY = height / 3 * row + GRID_STROKE_WIDTH / 2;
+                    }
+                    botRightX = topLeftX + butWidth;
+                    botRightY = topLeftY + butHeight;
                     canvas.drawLine(topLeftX, topLeftY, botRightX, botRightY, xPaint);
 
                     botLeftX = topLeftX;
-                    botLeftY = topLeftY + 320;
-                    topRightX = topLeftX + 320;
+                    botLeftY = topLeftY + butHeight;
+                    topRightX = topLeftX + butWidth;
                     topRightY = topLeftY;
                     canvas.drawLine(botLeftX, botLeftY, topRightX, topRightY, xPaint);
                 } else if (board.getTile(row, col) == 'O') {
-                    cenX = col * 380 + 160;
-                    cenY = 563 + row * 380 + 160;
-                    radius = 160;
+                    if (col == 1) {
+                        butWidth = width / 3 - GRID_STROKE_WIDTH;
+                    } else {
+                        butWidth = width / 3 - GRID_STROKE_WIDTH / 2;
+                    }
+                    if (row == 1) {
+                        butHeight = height / 3 - GRID_STROKE_WIDTH;
+                    } else {
+                        butHeight = height / 3 - GRID_STROKE_WIDTH / 2;
+                    }
 
+                    if (col == 0) {
+                        cenX = butWidth / 2;
+                    } else {
+                        cenX = width / 3 * col + GRID_STROKE_WIDTH / 2 + butWidth / 2;
+                    }
+                    if (row == 0) {
+                        cenY = butHeight / 2;
+                    } else {
+                        cenY = height / 3 * row + GRID_STROKE_WIDTH / 2 + butHeight / 2;
+                    }
+
+                    radius = butWidth / 2;
                     canvas.drawCircle(cenX, cenY, radius, oPaint);
                 }
 
@@ -259,8 +296,8 @@ public class BoardView extends View {
                 board.setCpuTurn(false);
             }
 
-            gameWon = board.checkWin();
-            if (gameWon == 'X' || gameWon == 'O') {
+            gameEnd = board.checkWin();
+            if (gameEnd == 'X' || gameEnd == 'O' || gameEnd == 'D') {
                 board.setGameEnded(true);
                 activity.gameEndedPopup();
                 return;

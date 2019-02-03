@@ -107,14 +107,15 @@ public class boardActivity extends AppCompatActivity {
 
         TextView playerText = (TextView) popupView.findViewById(R.id.playerWin);
         TextView cpuText = (TextView) popupView.findViewById(R.id.cpuWin);
+        TextView drawText = (TextView) popupView.findViewById(R.id.draw);
 
         char winner = board.checkWin();
         if (winner == board.getPlayerTile()) {
             playerText.setVisibility(View.VISIBLE);
-        }
-
-        if (winner == board.getCpuTile()) {
+        } else if (winner == board.getCpuTile()) {
             cpuText.setVisibility(View.VISIBLE);
+        } else if (winner == 'D') {
+            drawText.setVisibility(View.VISIBLE);
         }
 
         // ensures popup is not shown before layout content is loaded

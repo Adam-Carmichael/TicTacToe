@@ -80,7 +80,18 @@ public class Board {
                 return tileArr[2][0];
         }
 
-        return 0;
+        // checks if there are null values in the board, returning null if so
+        for (i = 0; i < 3; ++i) {
+            for (j = 0; j < 3; ++j) {
+                if (tileArr[i][j] != 'X' && tileArr[i][j] != 'O') {
+                    return 0;
+                }
+            }
+        }
+
+        // if this return statement is reached then there are no victors but the board is
+        // filled with X and O values, returns D for draw
+        return 'D';
     }
 
     public void setButArr(Button[][] someArr) {
